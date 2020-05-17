@@ -5,7 +5,7 @@ module Songkick
       class Client < ActiveRecord::Base
         self.table_name = :oauth2_clients
 
-        belongs_to :oauth2_client_owner, :polymorphic => true
+        belongs_to :oauth2_client_owner, :polymorphic => true, optional: true
         alias :owner  :oauth2_client_owner
         alias :owner= :oauth2_client_owner=
 
@@ -56,4 +56,3 @@ module Songkick
     end
   end
 end
-
