@@ -4,7 +4,11 @@ module Songkick
     class Schema
       def self.migrate
         ActiveRecord::Base.logger ||= Logger.new(StringIO.new)
-        ActiveRecord::Migrator.up(migrations_path)
+        if ActiveRecord.version.version >= '5.2'
+          ActiveRecord::MigrationContext.new(migrations_path).up
+        else
+          ActiveRecord::Migrator.up(migrations_path)
+        end
       end
       class << self
         alias :up :migrate
@@ -12,7 +16,11 @@ module Songkick
 
       def self.rollback
         ActiveRecord::Base.logger ||= Logger.new(StringIO.new)
-        ActiveRecord::Migrator.down(migrations_path)
+        if ActiveRecord.version.version >= '5.2'
+          ActiveRecord::MigrationContext.new(migrations_path).down
+        else
+          ActiveRecord::Migrator.down(migrations_path)
+        end
       end
       class << self
         alias :down :rollback
@@ -22,7 +30,5 @@ module Songkick
         File.expand_path('../schema', __FILE__)
       end
     end
-
   end
 end
-
