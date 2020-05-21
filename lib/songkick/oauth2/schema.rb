@@ -4,7 +4,9 @@ module Songkick
     class Schema
       def self.migrate
         ActiveRecord::Base.logger ||= Logger.new(StringIO.new)
-        if ActiveRecord.version.version >= '5.2'
+        if ActiveRecord.version.version >= '6.0'
+          ActiveRecord::MigrationContext.new(migrations_path, ActiveRecord::Base.connection.schema_migration).up
+        elsif ActiveRecord.version.version >= '5.2'
           ActiveRecord::MigrationContext.new(migrations_path).up
         else
           ActiveRecord::Migrator.up(migrations_path)
