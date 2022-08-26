@@ -6,6 +6,8 @@ module Songkick
         self.table_name = :oauth2_clients
 
         belongs_to :oauth2_client_owner, :polymorphic => true, optional: true
+        belongs_to :account, optional: true
+        
         alias :owner  :oauth2_client_owner
         alias :owner= :oauth2_client_owner=
 
