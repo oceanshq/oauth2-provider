@@ -5,7 +5,7 @@ module Songkick
       class Exchange
         attr_reader :client, :error, :error_description
 
-        REQUIRED_PARAMS    = [CLIENT_ID, CLIENT_SECRET, GRANT_TYPE]
+        REQUIRED_PARAMS    = [GRANT_TYPE]
         VALID_GRANT_TYPES  = [AUTHORIZATION_CODE, PASSWORD, ASSERTION, REFRESH_TOKEN, CLIENT_CREDENTIALS]
 
         REQUIRED_PASSWORD_PARAMS  = [USERNAME, PASSWORD]
@@ -112,15 +112,10 @@ module Songkick
         end
 
         def validate_client
-          @client = Model::Client.find_by_client_id(@params[CLIENT_ID])
+          @client = Model::Client.joins(:authorizations).where(authorizations: { code: @params[CODE] }).first
           unless @client
             @error = INVALID_CLIENT
             @error_description = "Unknown client ID #{@params[CLIENT_ID]}"
-          end
-
-          if @client and not @client.valid_client_secret?(@params[CLIENT_SECRET])
-            @error = INVALID_CLIENT
-            @error_description = 'Parameter client_secret does not match'
           end
         end
 

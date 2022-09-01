@@ -134,8 +134,8 @@ module Songkick
             @error_description = @transport_error.error_description
             return
           end
-
-          @client = @params[CLIENT_ID] && Model::Client.find_by_client_id(@params[CLIENT_ID])
+          @client = @params[CLIENT_ID] && Model::Client.joins(:account).where(accounts: { active: true, vhq: (@params['scope'] == 'vhq') })
+                                                                       .find_by_client_id(@params[CLIENT_ID])
           unless @client
             @error = INVALID_CLIENT
             @error_description = "Unknown client ID #{@params[CLIENT_ID]}"
